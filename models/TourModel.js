@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
 const validator = require('validator');
+// const UserModel = require('./../models/UserModel');
 
 const tourSchema = new mongoose.Schema(
   {
@@ -103,6 +104,12 @@ const tourSchema = new mongoose.Schema(
         description: String,
         day: Number
       }
+    ],
+    guides: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: 'user'
+      }
     ]
   },
   {
@@ -115,11 +122,26 @@ tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
 });
 
+// Virtual populate
+tourSchema.virtual('reviews', {
+  ref: 'review',
+  foreignField: 'tour',
+  localField: '_id'
+});
+
 // Document middleware
 tourSchema.pre('save', function (next) {
   this.slug = slugify(this.name, { lower: true });
   next();
 });
+
+// tourSchema.pre('save', async function (next) {
+//   const guidesPromises = this.guides.map(
+//     async id => await UserModel.findById(id)
+//   );
+//   this.guides = await Promise.all(guidesPromises);
+//   next();
+// });
 
 /* tourSchema.post('save', function (doc, next) {
   console.log(doc);
@@ -129,6 +151,15 @@ tourSchema.pre('save', function (next) {
 // Query middleware
 tourSchema.pre(/^find/, function (next) {
   this.find({ secretTour: { $ne: true } });
+  next();
+});
+
+tourSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'guides',
+    select: '-__v -passwordChangedAt'
+  });
+
   next();
 });
 
@@ -142,6 +173,6 @@ tourSchema.pre('aggregate', function (next) {
   next();
 });
 
-const Tour = mongoose.model('Tour', tourSchema);
+const Tour = mongoose.model('tour', tourSchema);
 
 module.exports = Tour;

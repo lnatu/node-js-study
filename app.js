@@ -62,9 +62,11 @@ const apiVersion = '/api/v1';
 // 2. Routes
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
+const reviewRouter = require('./routes/reviewRoutes');
 
 app.use(`${apiVersion}/tours`, tourRouter);
 app.use(`${apiVersion}/users`, userRouter);
+app.use(`${apiVersion}/reviews`, reviewRouter);
 
 app.all('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server`, 404));
