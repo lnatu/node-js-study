@@ -1,4 +1,6 @@
 const TourModel = require('./../models/TourModel');
+const UserModel = require('./../models/UserModel');
+const AppError = require('./../utils/AppError');
 const catchError = require('./../utils/catchError');
 
 exports.getOverview = catchError(async (req, res, next) => {
@@ -19,7 +21,10 @@ exports.getTour = catchError(async (req, res, next) => {
     path: 'reviews',
     fields: 'review rating user'
   });
-  console.log(tour);
+
+  if (!tour) {
+    return next(new AppError('There is no tour with that name', 404));
+  }
   // 2. Build template
   // 3. Render
   res.status(200).render('tour', {
@@ -33,3 +38,28 @@ exports.getLogin = (req, res) => {
     title: 'Login'
   });
 };
+
+exports.getAccount = (req, res) => {
+  res.status(200).render('account', {
+    title: 'Your account'
+  });
+};
+
+exports.updateUserData = catchError(async (req, res) => {
+  const updatedUser = await UserModel.findByIdAndUpdate(
+    req.user.id,
+    {
+      name: req.body.name,
+      email: req.body.email
+    },
+    {
+      new: true,
+      runValidators: true
+    }
+  );
+
+  res.status(200).render('account', {
+    title: 'Your account',
+    user: updatedUser
+  });
+});

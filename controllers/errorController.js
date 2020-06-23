@@ -24,33 +24,61 @@ const handleDuplicateFieldsDB = err => {
   return new AppError(message, 400);
 };
 
-const sendErrorDev = (err, res) => {
-  res.status(err.statusCode).json({
-    status: err.status,
-    error: err,
-    message: err.message,
-    stack: err.stack
+const sendErrorDev = (err, req, res) => {
+  // API
+  if (req.originalUrl.startsWith('/api')) {
+    return res.status(err.statusCode).json({
+      status: err.status,
+      error: err,
+      message: err.message,
+      stack: err.stack
+    });
+  }
+  // Render website
+  return res.status(err.statusCode).render('error', {
+    title: 'Something went wrong!',
+    message: err.message
   });
 };
 
-const sendErrorProd = (err, res) => {
-  // Operational, trusted error, send to client
-  if (err.isOperational) {
-    res.status(err.statusCode).json({
-      status: err.status,
-      message: err.message
-    });
-  } else {
+const sendErrorProd = (err, req, res) => {
+  // API
+  if (req.originalUrl.startsWith('/api')) {
+    if (err.isOperational) {
+      // Operational, trusted error, send to client
+      return res.status(err.statusCode).json({
+        status: err.status,
+        message: err.message
+      });
+    }
     // Programming or other unknown error, don't leak detail
     // 1. Log error
     console.log('ERROR', err);
 
     // 2. Send generic message
-    res.status(500).json({
+    return res.status(500).json({
       status: 'error',
       message: 'Something went wrong!'
     });
   }
+
+  // Render website
+  if (err.isOperational) {
+    // Operational, trusted error, send to client
+    return res.status(err.statusCode).render('error', {
+      title: 'Something went wrong!',
+      message: err.message
+    });
+  }
+  // Programming or other unknown error, don't leak detail
+  // 1. Log error
+  console.log('ERROR', err);
+
+  // 2. Send generic message
+  return res.status(err.statusCode).render('error', {
+    title: 'Something went wrong!',
+    message: 'Please try again later'
+  });
 };
 
 module.exports = (err, req, res, next) => {
@@ -60,9 +88,10 @@ module.exports = (err, req, res, next) => {
   const env = process.env.NODE_ENV.trim();
 
   if (env === 'development') {
-    sendErrorDev(err, res);
+    sendErrorDev(err, req, res);
   } else if (env === 'production') {
     let error = { ...err };
+    error.message = err.message;
 
     if (error.name === 'CastError') {
       error = handleCastErrorDB(error);
@@ -84,6 +113,6 @@ module.exports = (err, req, res, next) => {
       error = handleJWTExpiredError();
     }
 
-    sendErrorProd(error, res);
+    sendErrorProd(error, req, res);
   }
 };

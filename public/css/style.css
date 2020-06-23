@@ -110,6 +110,10 @@ body {
   background-color: #eb4d4b;
 }
 
+.alert--warning {
+  background-color: #e2a03f;
+}
+
 .heading-secondary {
   font-size: 2.25rem;
   text-transform: uppercase;
