@@ -1,7 +1,7 @@
 const AppError = require('./../utils/AppError');
 const UserModel = require('./../models/UserModel');
 const catchError = require('./../utils/catchError');
-const factory = require('./handlerFactory');
+const factory = require('./factoryController');
 
 const filterObj = (obj, ...allowedFields) => {
   const newObj = {};
@@ -12,6 +12,11 @@ const filterObj = (obj, ...allowedFields) => {
   });
 
   return newObj;
+};
+
+exports.getMe = (req, res, next) => {
+  req.params.id = req.user.id;
+  next();
 };
 
 exports.updateMe = catchError(async (req, res, next) => {
@@ -39,11 +44,6 @@ exports.updateMe = catchError(async (req, res, next) => {
   });
 });
 
-exports.getMe = (req, res, next) => {
-  req.params.id = req.user.id;
-  next();
-};
-
 exports.deleteMe = catchError(async (req, res, next) => {
   await UserModel.findByIdAndUpdate(req.user.id, { active: false });
 
@@ -61,9 +61,6 @@ exports.createUser = (req, res) => {
 };
 
 exports.getAllUsers = factory.getAll(UserModel);
-
 exports.getUser = factory.getOne(UserModel);
-
 exports.updateUser = factory.updateOne(UserModel);
-
 exports.deleteUser = factory.deleteOne(UserModel);

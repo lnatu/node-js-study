@@ -545,10 +545,10 @@ body {
 }
 
 #map {
-  position: absolute;
-  top: 0;
-  bottom: 0;
+  position: relative;
+  overflow-y: hidden;
   width: 100%;
+  height: 700px;
 }
 
 .marker {

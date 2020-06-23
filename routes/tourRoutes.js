@@ -2,16 +2,9 @@ const express = require('express');
 const authController = require('./../controllers/authController');
 const tourController = require('./../controllers/tourController');
 const reviewRouter = require('./../routes/reviewRoutes');
+const Tour = require('../models/TourModel');
 
 const router = express.Router();
-
-// router
-//   .route('/:tourId/reviews')
-//   .post(
-//     authController.protect,
-//     authController.restrictTo('user'),
-//     reviewController.createReview
-//   );
 
 router.use('/:tourId/reviews', reviewRouter);
 
@@ -29,8 +22,15 @@ router
   );
 
 router
+  .route('/tours-within/:distance/center/:latlng/unit/:unit')
+  .get(tourController.getToursWithin);
+router
+  .route('/distances/:latlng/unit/:unit')
+  .get(tourController.getDistances);
+
+router
   .route('/')
-  .get(tourController.getAllTours)
+  .get(authController.protect, tourController.getAllTours)
   .post(
     authController.protect,
     authController.restrictTo('admin', 'lead-guide'),
@@ -49,13 +49,5 @@ router
     authController.restrictTo('admin', 'lead-guide'),
     tourController.deleteTour
   );
-
-// router
-//   .route('/:tourId/reviews')
-//   .post(
-//     authController.protect,
-//     authController.restrictTo('user'),
-//     reviewController.createReview
-//   );
 
 module.exports = router;
