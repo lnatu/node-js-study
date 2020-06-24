@@ -1,7 +1,12 @@
 const AppError = require('./../utils/AppError');
 const UserModel = require('./../models/UserModel');
 const catchError = require('./../utils/catchError');
+const multer = require('multer');
 const factory = require('./factoryController');
+
+const upload = multer({ dest: 'public/img/users' });
+
+exports.uploadUserPhoto = upload.single('photo');
 
 const filterObj = (obj, ...allowedFields) => {
   const newObj = {};
@@ -20,6 +25,8 @@ exports.getMe = (req, res, next) => {
 };
 
 exports.updateMe = catchError(async (req, res, next) => {
+  console.log(req.file);
+  console.log(req.body);
   // 1. Create error if user post password
   if (req.body.password || req.body.passwordConfirm) {
     return next(new AppError('Cannot update password here'));
