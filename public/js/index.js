@@ -11,6 +11,7 @@ const userDataForm = document.querySelector('.form-user-data');
 const userPasswordForm = document.querySelector('.form-user-settings');
 const emailInput = document.getElementById('email');
 const nameInput = document.getElementById('name');
+const photoInput = document.getElementById('photo');
 const passwordInput = document.getElementById('password');
 const passwordCurrentInput = document.getElementById('password-current');
 const passwordConfirmInput = document.getElementById('password-confirm');
@@ -37,13 +38,13 @@ if (logoutBtn) {
 if (userDataForm) {
   userDataForm.addEventListener('submit', e => {
     e.preventDefault();
-    updateSettings(
-      {
-        email: emailInput.value,
-        name: nameInput.value
-      },
-      'data'
-    );
+    const form = new FormData();
+    form.append('name', nameInput.value);
+    form.append('email', emailInput.value);
+    form.append('photo', photoInput.files[0]);
+    console.log(form);
+
+    updateSettings(form, 'data');
   });
 }
 

@@ -16,7 +16,8 @@ const userSchema = new mongoose.Schema({
     validate: [validator.isEmail, 'Email is not correct']
   },
   photo: {
-    type: String
+    type: String,
+    default: 'default.jpg'
   },
   role: {
     type: String,
@@ -50,7 +51,7 @@ const userSchema = new mongoose.Schema({
 });
 
 userSchema.pre(/^find/, function (next) {
-  this.find({ active: {$ne: false} });
+  this.find({ active: { $ne: false } });
   next();
 });
 
