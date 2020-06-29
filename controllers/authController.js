@@ -3,7 +3,7 @@ const { promisify } = require('util');
 const jwt = require('jsonwebtoken');
 const AppError = require('./../utils/AppError');
 const catchError = require('./../utils/catchError');
-const sendEmail = require('./../utils/email');
+const Email = require('./../utils/email');
 const UserModel = require('./../models/UserModel');
 
 const signToken = id =>
@@ -50,6 +50,9 @@ exports.signup = catchError(async (req, res, next) => {
     passwordChangedAt: input.passwordChangedAt,
     role: input.role
   });
+
+  const url = `${req.protocol}://${req.get('host')}/me`;
+  await new Email(user, url).sendWelcome();
 
   createSendToken(user, 201, res);
 });
@@ -186,11 +189,11 @@ exports.forgotPassword = catchError(async (req, res, next) => {
   const message = `Forgot your password? Submit your patch request with your new password to: ${resetURL}. Ignore if not`;
 
   try {
-    await sendEmail({
-      email: user.email,
-      subject: 'Your password reset Token (only valid for 10 min)',
-      message
-    });
+    // await sendEmail({
+    //   email: user.email,
+    //   subject: 'Your password reset Token (only valid for 10 min)',
+    //   message
+    // });
 
     res.status(200).json({
       status: 'success',
