@@ -70,11 +70,13 @@ const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
 const viewRouter = require('./routes/viewRoutes');
+const bookingRouter = require('./routes/bookingRoutes');
 
 app.use('/', viewRouter);
 app.use(`${apiVersion}/tours`, tourRouter);
 app.use(`${apiVersion}/users`, userRouter);
 app.use(`${apiVersion}/reviews`, reviewRouter);
+app.use(`${apiVersion}/bookings`, bookingRouter);
 
 app.all('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server`, 404));
