@@ -51,8 +51,8 @@ exports.signup = catchError(async (req, res, next) => {
     role: input.role
   });
 
-  const url = `${req.protocol}://${req.get('host')}/me`;
-  await new Email(user, url).sendWelcome();
+  // const url = `${req.protocol}://${req.get('host')}/me`;
+  // await new Email(user, url).sendWelcome();
 
   createSendToken(user, 201, res);
 });

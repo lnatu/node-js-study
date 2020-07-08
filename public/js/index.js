@@ -2,6 +2,8 @@ import '@babel/polyfill';
 import { displayMap } from './mapbox';
 import { login, logout } from './login';
 import { updateSettings } from './updateSettings';
+import { bookTour } from './stripe';
+import { showAlert } from './alert';
 
 // DOMS
 const mapBox = document.getElementById('map');
@@ -15,6 +17,7 @@ const photoInput = document.getElementById('photo');
 const passwordInput = document.getElementById('password');
 const passwordCurrentInput = document.getElementById('password-current');
 const passwordConfirmInput = document.getElementById('password-confirm');
+const bookBtn = document.getElementById('book-tour');
 
 // VALUES
 
@@ -66,5 +69,13 @@ if (userPasswordForm) {
     passwordInput.value = '';
     passwordCurrentInput.value = '';
     passwordConfirmInput.value = '';
+  });
+}
+
+if (bookBtn) {
+  bookBtn.addEventListener('click', e => {
+    showAlert('warning', 'processing...');
+    const { tourId } = e.target.dataset;
+    bookTour(tourId);
   });
 }
