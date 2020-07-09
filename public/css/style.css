@@ -501,6 +501,7 @@ body {
 .overview-box__img {
   border-radius: 50%;
   height: 3.5rem;
+  width: 3.5rem;
   margin-right: 1.25rem;
 }
 
