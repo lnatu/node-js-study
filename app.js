@@ -7,6 +7,7 @@ const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
 const cookieParser = require('cookie-parser');
+const compression = require('compression');
 
 const app = express();
 const AppError = require('./utils/AppError');
@@ -58,8 +59,9 @@ app.use(
   })
 );
 
+app.use(compression());
+
 app.use((req, res, next) => {
-  console.log(req.cookiesl);
   next();
 });
 
