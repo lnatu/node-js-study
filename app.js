@@ -8,6 +8,7 @@ const xss = require('xss-clean');
 const hpp = require('hpp');
 const cookieParser = require('cookie-parser');
 const compression = require('compression');
+const cors = require('cors');
 
 const app = express();
 const AppError = require('./utils/AppError');
@@ -21,6 +22,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // 1. Global Middleware
 // Set security HTTP header
+app.use(cors());
+app.options('*', cors());
+
 app.use(helmet());
 
 // Development logging
