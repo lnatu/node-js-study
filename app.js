@@ -9,12 +9,13 @@ const hpp = require('hpp');
 const cookieParser = require('cookie-parser');
 const compression = require('compression');
 const cors = require('cors');
+const bookingRouter = require('./controllers/bookingController');
 
 const app = express();
 const AppError = require('./utils/AppError');
 const errorHandler = require('./controllers/errorController');
 
-app.enable('trust proxy')
+app.enable('trust proxy');
 
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
@@ -39,6 +40,12 @@ const limiter = rateLimit({
   message: 'Too many requests from this IP, please try again in an hour'
 });
 app.use('/api', limiter);
+
+app.post(
+  '/webhook-checkout',
+  express.raw({ type: 'application/json' }),
+  bookingRouter.webhookCheckout
+);
 
 // Body parser
 app.use(express.json({ limit: '10kb' }));
