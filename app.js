@@ -85,7 +85,6 @@ const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
 const viewRouter = require('./routes/viewRoutes');
-const bookingRouter = require('./routes/bookingRoutes');
 
 app.use('/', viewRouter);
 app.use(`${apiVersion}/tours`, tourRouter);
