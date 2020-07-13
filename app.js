@@ -9,7 +9,7 @@ const hpp = require('hpp');
 const cookieParser = require('cookie-parser');
 const compression = require('compression');
 const cors = require('cors');
-const bookingRouter = require('./controllers/bookingController');
+const bookingController = require('./controllers/bookingController');
 
 const app = express();
 const AppError = require('./utils/AppError');
@@ -44,7 +44,7 @@ app.use('/api', limiter);
 app.post(
   '/webhook-checkout',
   express.raw({ type: 'application/json' }),
-  bookingRouter.webhookCheckout
+  bookingController.webhookCheckout
 );
 
 // Body parser
@@ -85,6 +85,7 @@ const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
 const viewRouter = require('./routes/viewRoutes');
+const bookingRouter = require('./routes/bookingRoutes');
 
 app.use('/', viewRouter);
 app.use(`${apiVersion}/tours`, tourRouter);
