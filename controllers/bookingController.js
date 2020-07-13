@@ -3,7 +3,6 @@ const Tour = require('./../models/TourModel');
 const Booking = require('./../models/BookingModel');
 const catchError = require('./../utils/catchError');
 const factory = require('./../controllers/factoryController');
-const { create } = require('./../models/TourModel');
 const UserModel = require('../models/UserModel');
 
 exports.getCheckoutSession = catchError(async (req, res, next) => {
