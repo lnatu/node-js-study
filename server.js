@@ -4,6 +4,7 @@ const dotenv = require('dotenv');
 process.on('uncaughtException', err => {
   console.log('Uncaught Exception! Shutting down...');
   console.log(err.name, err.message);
+  console.log(err.stack);
   process.exit(1);
 });
 
@@ -17,7 +18,7 @@ const DB = process.env.DATABASE.replace(
 const DB_LOCAL = process.env.DATABASE_LOCAL;
 
 mongoose
-  .connect(DB_LOCAL, {
+  .connect(DB, {
     useNewUrlParser: true,
     useCreateIndex: true,
     useFindAndModify: false
